@@ -40,15 +40,21 @@ app.post("/urls", (req, res) => {
     let longURL = req.body.longURL;
     let shortenedURL = generateRandomString();
     urlDatabase[shortenedURL] = longURL;
-    console.log(shortenedURL, longURL);
+
     res.redirect(`http://localhost:8080/urls/${shortenedURL}`);
 });
 
 app.get("/u/:shortURL", (req, res) => {
     shortURL = req.params.shortURL;
-    console.log(urlDatabase[shortURL]);
+
     let longURL = urlDatabase[shortURL];
-    res.redirect(longURL);
+
+    if (longURL != undefined){
+        res.redirect(longURL);
+    } else {
+        res.status(404);
+        res.send('Error: URL not found');
+    }
 });
 
 app.listen(PORT, () => {
