@@ -33,8 +33,11 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-    console.log(req.body);
-    res.send("Cats!");
+    let longURL = req.body.longURL;
+    let shortenedURL = generateRandomString();
+    urlDatabase[shortenedURL] = longURL;
+    console.log(shortenedURL, longURL);
+    res.redirect(`http://localhost:8080/urls/${shortenedURL}`);
 });
 
 app.listen(PORT, () => {
@@ -46,7 +49,7 @@ function generateRandomString() {
     let characterSet = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     let randomString = "";
 
-    for (let i = 0; i < stringLength; i++){
+    for (let i = 0; i < stringLength; i++) {
         let randomIndex = Math.floor(Math.random() * (characterSet.length - 1 - 0 + 1)) + 0;
         randomString += characterSet.charAt(randomIndex);
     }
