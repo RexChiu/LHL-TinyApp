@@ -51,5 +51,5 @@ function generateRandomString() {
         randomString += characterSet.charAt(randomIndex);
     }
 
-    console.log(randomString);
+    return randomString;
 }
