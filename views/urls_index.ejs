@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/_header %>
+</head>
+
+<body>
+    <ul>
+        <% for(var url in urls) { %>
+            <li>URL:
+                <%= urls[url] %>
+            </li>
+            <li> Shortened:
+                <%= url %>
+            </li>
+            <li> Hyperlink:
+                <a href="localhost:8080/<%= url %>">localhost:8080/
+                    <%= url %>
+                </a>
+            </li>
+            <br>
+            <% } %>
+    </ul>
+</body>
+
+</html>
