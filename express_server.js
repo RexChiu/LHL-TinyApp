@@ -12,6 +12,10 @@ const urlDatabase = {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => {
+    res.render("urls_new");
+});
+
 app.get("/urls.json", (req, res) => {
     res.json(urlDatabase);
 });
@@ -38,6 +42,13 @@ app.post("/urls", (req, res) => {
     urlDatabase[shortenedURL] = longURL;
     console.log(shortenedURL, longURL);
     res.redirect(`http://localhost:8080/urls/${shortenedURL}`);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+    shortURL = req.params.shortURL;
+    console.log(urlDatabase[shortURL]);
+    let longURL = urlDatabase[shortURL];
+    res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
