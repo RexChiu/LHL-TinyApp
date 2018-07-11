@@ -128,6 +128,7 @@ app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}!`);
 });
 
+//function to genereate a unique shortURL for any new longURLs
 function generateRandomString() {
     let stringLength = 6;
     let characterSet = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
