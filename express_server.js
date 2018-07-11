@@ -12,22 +12,28 @@ const urlDatabase = {
 
 const app = express();
 
+//view engine
 app.set('view engine', 'ejs');
 
-app.use(cookieParser())
-
+//middleware
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(morgan('dev'));
 
+//routes
+
+//redirect localhost to create new URL
 app.get("/", (req, res) => {
     res.redirect("/urls/new");
 });
 
+//lists all urls as JSON
 app.get("/urls.json", (req, res) => {
     res.json(urlDatabase);
 });
 
+//lists all URLs in a prettier format
+//passes in username cookie
 app.get("/urls", (req, res) => {
     let templateVars = {
         urls: urlDatabase,
@@ -37,6 +43,8 @@ app.get("/urls", (req, res) => {
     res.render("urls_index", templateVars);
 });
 
+//shows create new url page
+//passes in username cookie
 app.get("/urls/new", (req, res) => {
     let templateVars = {
         username: req.cookies['username']
@@ -45,8 +53,10 @@ app.get("/urls/new", (req, res) => {
     res.render("urls_new", templateVars);
 });
 
+//shows more detailed info on a particular shortened URL
+//passes in username cookie
 app.get("/urls/:id", (req, res) => {
-    //send 404 not found if id does not exist
+    //finds shortURL from database, renders page
     if (urlDatabase[req.params.id] != undefined) {
         let templateVars = {
             shortURL: req.params.id,
@@ -55,46 +65,14 @@ app.get("/urls/:id", (req, res) => {
         };
         res.render("urls_show", templateVars);
     }
+    //send 404 not found if id does not exist
     else {
         
         res.status(404).send('Error: URL not found');
     }
 });
 
-app.post("/logout", (req, res) => {
-    res.clearCookie("username");
-
-    res.redirect('/urls');
-});
-
-app.post("/login", (req, res) => {
-    res.cookie("username", req.body.username);
-
-    res.redirect('/urls');
-});
-
-app.post("/urls", (req, res) => {
-    let longURL = req.body.longURL;
-    let shortenedURL = generateRandomString();
-    urlDatabase[shortenedURL] = longURL;
-
-    res.redirect(`http://localhost:${PORT}/urls/${shortenedURL}`);
-});
-
-app.post("/urls/:id/delete", (req, res) => {
-    let shortURL = req.params.id;
-    delete urlDatabase[shortURL];
-
-    res.redirect("/urls");
-});
-
-app.post("/urls/:id", (req, res) => {
-    let shortURL = req.params.id;
-    urlDatabase[shortURL] = req.body.longURL;
-
-    res.redirect("/urls");
-});
-
+//receives request to use shortURL, redirects accordingly
 app.get("/u/:shortURL", (req, res) => {
     shortURL = req.params.shortURL;
 
@@ -105,6 +83,45 @@ app.get("/u/:shortURL", (req, res) => {
     } else {
         res.status(404).send('Error: URL not found');
     }
+});
+
+//receives logout, deletes username from cookie
+app.post("/logout", (req, res) => {
+    res.clearCookie("username");
+
+    res.redirect('/urls');
+});
+
+//recieves login, adds username to cookie
+app.post("/login", (req, res) => {
+    res.cookie("username", req.body.username);
+
+    res.redirect('/urls');
+});
+
+//receives new longURL, generates a shortURL and redirects to show shortURL
+app.post("/urls", (req, res) => {
+    let longURL = req.body.longURL;
+    let shortenedURL = generateRandomString();
+    urlDatabase[shortenedURL] = longURL;
+
+    res.redirect(`/urls/${shortenedURL}`);
+});
+
+//receives command to delete the URL, deletes from database
+app.post("/urls/:id/delete", (req, res) => {
+    let shortURL = req.params.id;
+    delete urlDatabase[shortURL];
+
+    res.redirect("/urls");
+});
+
+//receives command to modify the longURL of a shortURL
+app.post("/urls/:id", (req, res) => {
+    let shortURL = req.params.id;
+    urlDatabase[shortURL] = req.body.longURL;
+
+    res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
