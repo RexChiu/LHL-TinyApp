@@ -51,6 +51,13 @@ app.post("/urls", (req, res) => {
     res.redirect(`http://localhost:${PORT}/urls/${shortenedURL}`);
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+    let shortURL = req.params.id;
+    delete urlDatabase[shortURL];
+
+    res.render("urls_index", { urls: urlDatabase });
+});
+
 app.get("/u/:shortURL", (req, res) => {
     shortURL = req.params.shortURL;
 
