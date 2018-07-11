@@ -1,19 +1,27 @@
 const express = require("express");
-const app = express();
-const PORT = 8080;
 const bodyParser = require("body-parser");
+const morgan = require ('morgan');
+const cookieParser = require('cookie-parser');
 
-app.set('view engine', 'ejs');
+const PORT = 8080;
 
 const urlDatabase = {
     "b2xVn2": "http://www.lighthouselabs.ca",
     "9sm5xK": "http://www.google.com"
 }
 
+const app = express();
+
+app.set('view engine', 'ejs');
+
+app.use(cookieParser())
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(morgan('dev'));
+
 app.get("/", (req, res) => {
-    res.render("urls_new");
+    res.redirect("/urls/new");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -41,6 +49,12 @@ app.get("/urls/:id", (req, res) => {
         
         res.status(404).send('Error: URL not found');
     }
+});
+
+app.post("/login", (req, res) => {
+    res.cookie("username", req.body.username);
+
+    res.redirect('/urls');
 });
 
 app.post("/urls", (req, res) => {
