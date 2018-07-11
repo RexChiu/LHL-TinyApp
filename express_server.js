@@ -29,11 +29,18 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-    let templateVars = {
-        shortURL: req.params.id,
-        urls: urlDatabase
-    };
-    res.render("urls_show", templateVars);
+    //send 404 not found if id does not exist
+    if (urlDatabase[req.params.id] != undefined) {
+        let templateVars = {
+            shortURL: req.params.id,
+            urls: urlDatabase
+        };
+        res.render("urls_show", templateVars);
+    }
+    else {
+        
+        res.status(404).send('Error: URL not found');
+    }
 });
 
 app.post("/urls", (req, res) => {
@@ -41,7 +48,7 @@ app.post("/urls", (req, res) => {
     let shortenedURL = generateRandomString();
     urlDatabase[shortenedURL] = longURL;
 
-    res.redirect(`http://localhost:8080/urls/${shortenedURL}`);
+    res.redirect(`http://localhost:${PORT}/urls/${shortenedURL}`);
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -49,11 +56,10 @@ app.get("/u/:shortURL", (req, res) => {
 
     let longURL = urlDatabase[shortURL];
 
-    if (longURL != undefined){
+    if (longURL != undefined) {
         res.redirect(longURL);
     } else {
-        res.status(404);
-        res.send('Error: URL not found');
+        res.status(404).send('Error: URL not found');
     }
 });
 
