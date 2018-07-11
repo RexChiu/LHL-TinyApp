@@ -29,7 +29,12 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-    res.render("urls_index", { urls: urlDatabase });
+    let templateVars = {
+        urls: urlDatabase,
+        username: req.cookies['username']
+    }
+
+    res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -41,7 +46,8 @@ app.get("/urls/:id", (req, res) => {
     if (urlDatabase[req.params.id] != undefined) {
         let templateVars = {
             shortURL: req.params.id,
-            urls: urlDatabase
+            urls: urlDatabase,
+            username: req.cookies['username']
         };
         res.render("urls_show", templateVars);
     }
@@ -49,6 +55,12 @@ app.get("/urls/:id", (req, res) => {
         
         res.status(404).send('Error: URL not found');
     }
+});
+
+app.post("/logout", (req, res) => {
+    res.clearCookie("username");
+
+    res.redirect('/urls');
 });
 
 app.post("/login", (req, res) => {
