@@ -55,7 +55,7 @@ app.post("/urls/:id/delete", (req, res) => {
     let shortURL = req.params.id;
     delete urlDatabase[shortURL];
 
-    res.render("urls_index", { urls: urlDatabase });
+    res.redirect("/urls");
 });
 
 app.get("/u/:shortURL", (req, res) => {
