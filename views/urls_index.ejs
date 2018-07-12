@@ -17,14 +17,19 @@
             <li> Hyperlink:
                 <a href="localhost:8080/u/<%= url %>">localhost:8080/u/<%= url %></a>
             </li>
-            <li>
-                <form method="POST" action="/urls/<%= url %>/delete"><label for="urlDelete">Delete URL:</label> <input type="submit" value="Submit"></form>
-            </li>
-            <li>
-                <a href="localhost:8080/urls/<%= url %>">Edit</a>
-            </li>
-            <br>
+            <% if (urls[url].userID == cookie.user_id) { %>
+                <li>
+                    <form method="POST" action="/urls/<%= url %>/delete">
+                        <label for="urlDelete">Delete URL:</label>
+                        <input type="submit" value="Submit">
+                    </form>
+                </li>
+                <li>
+                    <a href="localhost:8080/urls/<%= url %>">Edit</a>
+                </li>
             <% } %>
+            <br>
+        <% } %>
     </ul>
 </body>
 
