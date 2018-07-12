@@ -113,15 +113,30 @@ app.post("/register", (req, res) => {
         username: req.cookies['username']
     };
 
+    let inputEmail = req.body.email;
+    let inputPassword = req.body.password;
+
+    //error checking for registration
+    if (inputEmail === "" || inputPassword === ""){
+        res.status(400).send("Email or Password cannot be empty strings!");
+        return;
+    }
+    //checks if email exists already
+    for (let key in users){
+        if (inputEmail == users[key].email){
+            res.status(400).send("Email already exists!");
+            return;
+        }
+    }
+
     let newUser = {};
-    newUser.id = generateRandomString()
-    newUser.email = req.body.email;
-    newUser.password = req.body.password;
+    newUser.id = generateRandomString();
+    newUser.email = inputEmail;
+    newUser.password = inputPassword;
 
     users[newUser.id] = newUser;
 
     res.cookie("user_id", newUser.id);
-
 
     res.redirect("/urls");
 });
