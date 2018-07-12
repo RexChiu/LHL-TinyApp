@@ -8,7 +8,20 @@ const PORT = 8080;
 const urlDatabase = {
     "b2xVn2": "http://www.lighthouselabs.ca",
     "9sm5xK": "http://www.google.com"
-}
+};
+
+const users = { 
+    "userRandomID": {
+      id: "userRandomID", 
+      email: "user@example.com", 
+      password: "purple-monkey-dinosaur"
+    },
+   "user2RandomID": {
+      id: "user2RandomID", 
+      email: "user2@example.com", 
+      password: "dishwasher-funk"
+    }
+  };
 
 const app = express();
 
@@ -85,9 +98,31 @@ app.get("/u/:shortURL", (req, res) => {
     }
 });
 
-//receives request to register
+//receives get request to register
 app.get("/register", (req, res) => {
-    res.render("register");
+    let templateVars = {
+        username: req.cookies['username']
+    }
+    res.render("register", templateVars);
+
+});
+
+//receives post request to register with credentials
+app.post("/register", (req, res) => {
+    let templateVars = {
+        username: req.cookies['username']
+    };
+
+    let newUser = {};
+    newUser.id = generateRandomString()
+    newUser.email = req.body.email;
+    newUser.password = req.body.password;
+
+    users[newUser.id] = newUser;
+
+    console.log(users);
+
+    res.render("register", templateVars);
 
 });
 
