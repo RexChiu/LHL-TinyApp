@@ -8,31 +8,32 @@
 <body>
     <ul>
         <% for(var url in urls) { %>
+            <li>Shortened URL:
+                <%= url %>
+            </li>
             <li>Full URL:
                 <%= urls[url].longURL %>
-            </li>
-            <li> Shortened:
-                <%= url %>
             </li>
             <li>Number of Visitors:
                 <%= urls[url].numVisited %>
             </li>
-            <li> Hyperlink:
+            <li>Hyperlink:
                 <a href="localhost:8080/u/<%= url %>">localhost:8080/u/<%= url %></a>
             </li>
-            <% if (urls[url].userID == cookie.user_id) { %>
-                <li>
-                    <form method="POST" action="/urls/<%= url %>/delete">
-                        <label for="urlDelete">Delete URL:</label>
-                        <input type="submit" value="Submit">
-                    </form>
-                </li>
-                <li>
-                    <a href="localhost:8080/urls/<%= url %>">Edit</a>
-                </li>
-            <% } %>
+            <li>
+                <form method="POST" action="/urls/<%= url %>/delete">
+                    <label for="urlDelete">Delete URL:</label>
+                    <input type="submit" value="Submit">
+                </form>
+            </li>
+            <li>
+                <a href="localhost:8080/urls/<%= url %>">Edit</a>
+            </li>
+            <li>
+                <a href="localhost:8080/urls/new">Create a New Short Link</a>
+            </li>
             <br>
-        <% } %>
+            <% } %>
     </ul>
 </body>
 
