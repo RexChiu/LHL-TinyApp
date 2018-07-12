@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const morgan = require ('morgan');
+const morgan = require('morgan');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
@@ -21,18 +21,18 @@ const urlDatabase = {
     }
 };
 
-const users = { 
+const users = {
     "Cats": {
-      id: "Cats", 
-      email: "Cats", 
-      password: "$2a$10$pqsXXKoQmBuaKQ.Tg0RJ/eafwvr3pF49IMi6ovoq8fRwwVBPE6r0K"
+        id: "Cats",
+        email: "Cats",
+        password: "$2a$10$pqsXXKoQmBuaKQ.Tg0RJ/eafwvr3pF49IMi6ovoq8fRwwVBPE6r0K"
     },
-   "Dogs": {
-      id: "Dogs", 
-      email: "Dogs", 
-      password: "$2a$10$phBSKcWhdBUYjnwh4vmIyO72DTBT0fAVgWLe8qRyF1vug2eu6mnXK"
+    "Dogs": {
+        id: "Dogs",
+        email: "Dogs",
+        password: "$2a$10$phBSKcWhdBUYjnwh4vmIyO72DTBT0fAVgWLe8qRyF1vug2eu6mnXK"
     }
-  };
+};
 
 const app = express();
 
@@ -43,10 +43,10 @@ app.set('view engine', 'ejs');
 app.use(cookieSession({
     name: 'session',
     keys: ["Cats Rule The World"],
-  
+
     // Cookie Options
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }))
+}))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
@@ -54,7 +54,15 @@ app.use(morgan('dev'));
 
 //redirect localhost to create new URL
 app.get("/", (req, res) => {
-    res.redirect("/login");
+    let user_id = req.session.user_id;
+
+    //if not logged in, redirect to login page
+    //otherwise show user's urls
+    if (user_id === undefined) {
+        res.redirect("/login");
+    } else {
+        res.redirect("/urls");
+    }
 });
 
 //lists all urls as JSON
@@ -68,7 +76,7 @@ app.get("/urls", (req, res) => {
     let user_id = req.session.user_id;
 
     //if user is not logged in, send error message saying they should login first
-    if (user_id === undefined){
+    if (user_id === undefined) {
         res.status(400).send("Login to display your URLs");
         return;
     }
@@ -90,12 +98,12 @@ app.get("/urls/new", (req, res) => {
     let user_id = req.session.user_id;
 
     //only allows a logged in user to register new urls, otherwise redirects to login page
-    if (isLoggedIn(user_id)){
+    if (isLoggedIn(user_id)) {
         let templateVars = {
             users: users,
             cookie: req.session
         };
-    
+
         res.render("urls_new", templateVars);
     } else {
         res.redirect("/login");
@@ -166,13 +174,13 @@ app.post("/register", (req, res) => {
     let inputPassword = req.body.password;
 
     //error checking for registration
-    if (inputEmail === "" || inputPassword === ""){
+    if (inputEmail === "" || inputPassword === "") {
         res.status(400).send("Email or Password cannot be empty strings!");
         return;
     }
     //checks if email exists already
-    for (let key in users){
-        if (inputEmail == users[key].email){
+    for (let key in users) {
+        if (inputEmail == users[key].email) {
             res.status(400).send("Email already exists!");
             return;
         }
@@ -205,24 +213,24 @@ app.post("/login", (req, res) => {
     let userId = null;
 
     //checks if email exists 
-    for (let key in users){
-        if (users[key].email == inputEmail){
+    for (let key in users) {
+        if (users[key].email == inputEmail) {
             userExists = true;
             userId = users[key].id;
         }
     }
-    if (userExists == false){
+    if (userExists == false) {
         res.status(403).send("Email does not exist");
         return;
     }
 
-    for (let key in users){
+    for (let key in users) {
         // if (users[key].password == inputPassword){
-        if (bcrypt.compareSync(inputPassword, users[key].password)){
+        if (bcrypt.compareSync(inputPassword, users[key].password)) {
             passwordMatch = true;
         }
     }
-    if (passwordMatch == false){
+    if (passwordMatch == false) {
         res.status(403).send("Password does not match");
         return;
     }
@@ -278,9 +286,9 @@ function generateRandomString() {
 }
 
 //function to check if the user_id is in the users database
-function isLoggedIn(user_id){
-    for (let key in users){
-        if (users[key].id == user_id){
+function isLoggedIn(user_id) {
+    for (let key in users) {
+        if (users[key].id == user_id) {
             return true;
         }
     }
@@ -288,11 +296,11 @@ function isLoggedIn(user_id){
 }
 
 //function to return the URLs of a userID
-function urlsForUser(id){
+function urlsForUser(id) {
     let urlsList = {};
 
-    for (let key in urlDatabase){
-        if (urlDatabase[key].userID == id){
+    for (let key in urlDatabase) {
+        if (urlDatabase[key].userID == id) {
             urlsList[key] = urlDatabase[key];
         }
     }
