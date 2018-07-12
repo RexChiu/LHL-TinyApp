@@ -65,11 +65,6 @@ app.get("/", (req, res) => {
     }
 });
 
-//lists all urls as JSON
-app.get("/urls.json", (req, res) => {
-    res.json(urlDatabase);
-});
-
 //lists all URLs in a prettier format
 //passes in username session
 app.get("/urls", (req, res) => {
