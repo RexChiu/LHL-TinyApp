@@ -154,7 +154,7 @@ app.post("/register", (req, res) => {
 
 //receives logout, deletes username from cookie
 app.post("/logout", (req, res) => {
-    res.clearCookie("username");
+    res.clearCookie("user_id");
 
     res.redirect('/urls');
 });
