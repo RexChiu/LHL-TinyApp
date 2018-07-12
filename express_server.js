@@ -212,6 +212,7 @@ app.post("/login", (req, res) => {
 app.post("/urls", (req, res) => {
     let longURL = req.body.longURL;
     let shortenedURL = generateRandomString();
+    urlDatabase[shortenedURL] = {};
     urlDatabase[shortenedURL].shortURL = shortenedURL;
     urlDatabase[shortenedURL].longURL = longURL;
     urlDatabase[shortenedURL].userID = req.cookies.user_id;
