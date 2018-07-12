@@ -83,14 +83,13 @@ app.get("/urls/:id", (req, res) => {
     }
     //send 404 not found if id does not exist
     else {
-        
         res.status(404).send('Error: URL not found');
     }
 });
 
 //receives request to use shortURL, redirects accordingly
 app.get("/u/:shortURL", (req, res) => {
-    shortURL = req.params.shortURL;
+    let shortURL = req.params.shortURL;
 
     let longURL = urlDatabase[shortURL];
 
@@ -106,9 +105,8 @@ app.get("/register", (req, res) => {
     let templateVars = {
         users: users,
         cookie: req.cookies
-    }
+    };
     res.render("register", templateVars);
-
 });
 
 //receives get request to login
@@ -116,9 +114,8 @@ app.get("/login", (req, res) => {
     let templateVars = {
         users: users,
         cookie: req.cookies
-    }
+    };
     res.render("login", templateVars);
-
 });
 
 //receives post request to register with credentials
@@ -152,7 +149,6 @@ app.post("/register", (req, res) => {
     users[newUser.id] = newUser;
 
     res.cookie("user_id", newUser.id);
-
     res.redirect("/urls");
 });
 
@@ -163,11 +159,38 @@ app.post("/logout", (req, res) => {
     res.redirect('/urls');
 });
 
-//recieves login, adds username to cookie
+//recieves login post, tries to login user
 app.post("/login", (req, res) => {
-    res.cookie("username", req.body.username);
+    let userExists = false;
+    let passwordMatch = false;
+    let inputEmail = req.body.email;
+    let inputPassword = req.body.password;
+    let userId = null;
 
-    res.redirect('/urls');
+    //checks if email exists 
+    for (let key in users){
+        if (users[key].email == inputEmail){
+            userExists = true;
+            userId = users[key].id;
+        }
+    }
+    if (userExists == false){
+        res.status(403).send("Email does not exist");
+        return;
+    }
+
+    for (let key in users){
+        if (users[key].password == inputPassword){
+            passwordMatch = true;
+        }
+    }
+    if (passwordMatch == false){
+        res.status(403).send("Password does not match");
+        return;
+    }
+
+    res.cookie("user_id", userId);
+    res.redirect("/");
 });
 
 //receives new longURL, generates a shortURL and redirects to show shortURL
