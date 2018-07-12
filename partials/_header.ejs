@@ -3,6 +3,10 @@
 
 <head>
     <title>TinyCatsApp</title>
+
+    <a href="localhost:8080/urls">List URLs</a>
+    <a href="localhost:8080/urls/new">New URL</a>
+
     <% let user_id = cookie.user_id; %>
     <% let email = "" %>
     <% for (let key in users) { %>
@@ -10,7 +14,7 @@
             <% email = users[key].email %>
         <% } %>
     <% } %>
-
+    <br>
     <% if (email != ""){ %>
         Logged in as <%= email %>
         <form action="/logout" method="POST">
@@ -19,7 +23,5 @@
     <% } else { %>
         <a href="localhost:8080/login">Login</a>
         <a href="localhost:8080/register">Register</a>
-        <a href="localhost:8080/urls">List URLs</a>
-        <a href="localhost:8080/urls/new">New URL</a>
     <% } %>
 </head>
