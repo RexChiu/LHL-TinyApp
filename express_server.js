@@ -50,7 +50,8 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls", (req, res) => {
     let templateVars = {
         urls: urlDatabase,
-        username: req.cookies['username']
+        users: users,
+        cookie: req.cookies
     }
 
     res.render("urls_index", templateVars);
@@ -60,7 +61,8 @@ app.get("/urls", (req, res) => {
 //passes in username cookie
 app.get("/urls/new", (req, res) => {
     let templateVars = {
-        username: req.cookies['username']
+        users: users,
+        cookie: req.cookies
     }
 
     res.render("urls_new", templateVars);
@@ -74,7 +76,8 @@ app.get("/urls/:id", (req, res) => {
         let templateVars = {
             shortURL: req.params.id,
             urls: urlDatabase,
-            username: req.cookies['username']
+            users: users,
+            cookie: req.cookies
         };
         res.render("urls_show", templateVars);
     }
@@ -101,7 +104,8 @@ app.get("/u/:shortURL", (req, res) => {
 //receives get request to register
 app.get("/register", (req, res) => {
     let templateVars = {
-        username: req.cookies['username']
+        users: users,
+        cookie: req.cookies
     }
     res.render("register", templateVars);
 
@@ -110,7 +114,8 @@ app.get("/register", (req, res) => {
 //receives post request to register with credentials
 app.post("/register", (req, res) => {
     let templateVars = {
-        username: req.cookies['username']
+        users: users,
+        cookie: req.cookies
     };
 
     let inputEmail = req.body.email;

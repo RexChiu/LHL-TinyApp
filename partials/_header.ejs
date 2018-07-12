@@ -3,17 +3,24 @@
 
 <head>
     <title>TinyCatsApp</title>
+    <% let user_id = cookie.user_id; %>
+    <% let email = "" %>
+    <% for (let key in users) { %>
+        <% if (user_id == key) { %>
+            <% email = users[key].email %>
+        <% } %>
+    <% } %>
 
-    <% if (username !== undefined){ %>
-        Logged in as <%= username %>.
+    <% if (email != ""){ %>
+        Logged in as <%= email %>
         <form action="/logout" method="POST">
             <input type="submit" value="Logout">
-          </form>
-     <% } else { %>
+        </form>
+    <% } else { %>
         <form action="/login" method="POST">
             Login:
             <input id="username" type="text" name="username" placeholder="username" style="width: 300px">
             <input type="submit" value="Login">
         </form>
-     <% } %>
+    <% } %> 
 </head>
