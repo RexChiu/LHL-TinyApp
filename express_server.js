@@ -11,13 +11,13 @@ const urlDatabase = {
         shortURL: "CatsURL",
         longURL: "http://www.lighthouselabs.ca",
         userID: "Cats",
-        numVisited: 0
+        numVisited: 4
     },
     "DogsURL": {
         shortURL: "DogsURL",
         longURL: "http://www.google.com",
         userID: "Dogs",
-        numVisited: 0
+        numVisited: 7
     }
 };
 
@@ -126,6 +126,9 @@ app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
 
     let longURL = urlDatabase[shortURL].longURL;
+
+    //increment numVisited counter
+    urlDatabase[shortURL].numVisited += 1;
 
     if (longURL != undefined) {
         res.redirect(longURL);

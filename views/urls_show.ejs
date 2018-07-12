@@ -14,6 +14,9 @@
             <li>Shortened URL:
                 <%= shortURL %>
             </li>
+            <li>Number of Visitors:
+                <%= urls[shortURL].numVisited %>
+            </li>
             <form action="/urls/<%= shortURL %>" method="POST">
                 Edit:
                 <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
