@@ -6,20 +6,28 @@ const cookieParser = require('cookie-parser');
 const PORT = 8080;
 
 const urlDatabase = {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com"
+    "b2xVn2": {
+        shortURL: "b2xVn2",
+        longURL: "http://www.lighthouselabs.ca",
+        userID: "Cats"
+    },
+    "9sm5xK": {
+        shortURL: "9sm5xK",
+        longURL: "http://www.google.com",
+        userID: "Dogs"
+    }
 };
 
 const users = { 
-    "userRandomID": {
-      id: "userRandomID", 
-      email: "user@example.com", 
-      password: "purple-monkey-dinosaur"
+    "Cats": {
+      id: "Cats", 
+      email: "Cats", 
+      password: "Cats"
     },
-   "user2RandomID": {
-      id: "user2RandomID", 
-      email: "user2@example.com", 
-      password: "dishwasher-funk"
+   "Dogs": {
+      id: "Dogs", 
+      email: "Dogs", 
+      password: "Dogs"
     }
   };
 
@@ -37,7 +45,7 @@ app.use(morgan('dev'));
 
 //redirect localhost to create new URL
 app.get("/", (req, res) => {
-    res.redirect("/urls/new");
+    res.redirect("/urls");
 });
 
 //lists all urls as JSON
@@ -60,12 +68,19 @@ app.get("/urls", (req, res) => {
 //shows create new url page
 //passes in username cookie
 app.get("/urls/new", (req, res) => {
-    let templateVars = {
-        users: users,
-        cookie: req.cookies
-    }
+    let user_id = req.cookies.user_id;
 
-    res.render("urls_new", templateVars);
+    //only allows a logged in user to register new urls, otherwise redirects to login page
+    if (isLoggedIn(user_id)){
+        let templateVars = {
+            users: users,
+            cookie: req.cookies
+        };
+    
+        res.render("urls_new", templateVars);
+    } else {
+        res.redirect("/login");
+    }
 });
 
 //shows more detailed info on a particular shortened URL
@@ -234,4 +249,14 @@ function generateRandomString() {
     }
 
     return randomString;
+}
+
+//function to check if the user_id is in the users database
+function isLoggedIn(user_id){
+    for (let key in users){
+        if (users[key].id == user_id){
+            return true;
+        }
+    }
+    return false;
 }
