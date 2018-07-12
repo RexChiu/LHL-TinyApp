@@ -6,13 +6,13 @@ const cookieParser = require('cookie-parser');
 const PORT = 8080;
 
 const urlDatabase = {
-    "b2xVn2": {
-        shortURL: "b2xVn2",
+    "CatsURL": {
+        shortURL: "CatsURL",
         longURL: "http://www.lighthouselabs.ca",
         userID: "Cats"
     },
-    "9sm5xK": {
-        shortURL: "9sm5xK",
+    "DogsURL": {
+        shortURL: "DogsURL",
         longURL: "http://www.google.com",
         userID: "Dogs"
     }
@@ -45,7 +45,7 @@ app.use(morgan('dev'));
 
 //redirect localhost to create new URL
 app.get("/", (req, res) => {
-    res.redirect("/urls");
+    res.redirect("/login");
 });
 
 //lists all urls as JSON
@@ -56,8 +56,18 @@ app.get("/urls.json", (req, res) => {
 //lists all URLs in a prettier format
 //passes in username cookie
 app.get("/urls", (req, res) => {
+    let user_id = req.cookies.user_id;
+
+    //if user is not logged in, send error message saying they should login first
+    if (user_id === undefined){
+        res.status(400).send("Login to display your URLs");
+        return;
+    }
+
+    let urlList = urlsForUser(user_id);
+
     let templateVars = {
-        urls: urlDatabase,
+        urls: urlList,
         users: users,
         cookie: req.cookies
     }
@@ -171,7 +181,7 @@ app.post("/register", (req, res) => {
 app.post("/logout", (req, res) => {
     res.clearCookie("user_id");
 
-    res.redirect('/urls');
+    res.redirect('/login');
 });
 
 //recieves login post, tries to login user
@@ -205,7 +215,7 @@ app.post("/login", (req, res) => {
     }
 
     res.cookie("user_id", userId);
-    res.redirect("/");
+    res.redirect("/urls");
 });
 
 //receives new longURL, generates a shortURL and redirects to show shortURL
@@ -262,4 +272,17 @@ function isLoggedIn(user_id){
         }
     }
     return false;
+}
+
+//function to return the URLs of a userID
+function urlsForUser(id){
+    let urlsList = {};
+
+    for (let key in urlDatabase){
+        if (urlDatabase[key].userID == id){
+            urlsList[key] = urlDatabase[key];
+        }
+    }
+
+    return urlsList;
 }
