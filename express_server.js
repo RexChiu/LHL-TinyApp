@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require ('morgan');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 const PORT = 8080;
 
@@ -22,12 +23,12 @@ const users = {
     "Cats": {
       id: "Cats", 
       email: "Cats", 
-      password: "Cats"
+      password: "$2a$10$pqsXXKoQmBuaKQ.Tg0RJ/eafwvr3pF49IMi6ovoq8fRwwVBPE6r0K"
     },
    "Dogs": {
       id: "Dogs", 
       email: "Dogs", 
-      password: "Dogs"
+      password: "$2a$10$phBSKcWhdBUYjnwh4vmIyO72DTBT0fAVgWLe8qRyF1vug2eu6mnXK"
     }
   };
 
@@ -169,7 +170,7 @@ app.post("/register", (req, res) => {
     let newUser = {};
     newUser.id = generateRandomString();
     newUser.email = inputEmail;
-    newUser.password = inputPassword;
+    newUser.password = bcrypt.hashSync(inputPassword, 10);
 
     users[newUser.id] = newUser;
 
@@ -205,7 +206,8 @@ app.post("/login", (req, res) => {
     }
 
     for (let key in users){
-        if (users[key].password == inputPassword){
+        // if (users[key].password == inputPassword){
+        if (bcrypt.compareSync(inputPassword, users[key].password)){
             passwordMatch = true;
         }
     }
