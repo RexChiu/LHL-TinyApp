@@ -10,12 +10,14 @@ const urlDatabase = {
     "CatsURL": {
         shortURL: "CatsURL",
         longURL: "http://www.lighthouselabs.ca",
-        userID: "Cats"
+        userID: "Cats",
+        numVisited: 0
     },
     "DogsURL": {
         shortURL: "DogsURL",
         longURL: "http://www.google.com",
-        userID: "Dogs"
+        userID: "Dogs",
+        numVisited: 0
     }
 };
 
