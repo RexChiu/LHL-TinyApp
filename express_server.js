@@ -106,7 +106,7 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
 
-    let longURL = urlDatabase[shortURL];
+    let longURL = urlDatabase[shortURL].longURL;
 
     if (longURL != undefined) {
         res.redirect(longURL);
@@ -212,7 +212,9 @@ app.post("/login", (req, res) => {
 app.post("/urls", (req, res) => {
     let longURL = req.body.longURL;
     let shortenedURL = generateRandomString();
-    urlDatabase[shortenedURL] = longURL;
+    urlDatabase[shortenedURL].shortURL = shortenedURL;
+    urlDatabase[shortenedURL].longURL = longURL;
+    urlDatabase[shortenedURL].userID = req.cookies.user_id;
 
     res.redirect(`/urls/${shortenedURL}`);
 });
