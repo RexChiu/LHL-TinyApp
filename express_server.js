@@ -111,6 +111,16 @@ app.get("/register", (req, res) => {
 
 });
 
+//receives get request to login
+app.get("/login", (req, res) => {
+    let templateVars = {
+        users: users,
+        cookie: req.cookies
+    }
+    res.render("login", templateVars);
+
+});
+
 //receives post request to register with credentials
 app.post("/register", (req, res) => {
     let templateVars = {
