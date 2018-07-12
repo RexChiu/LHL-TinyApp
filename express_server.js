@@ -120,10 +120,10 @@ app.post("/register", (req, res) => {
 
     users[newUser.id] = newUser;
 
-    console.log(users);
+    res.cookie("user_id", newUser.id);
 
-    res.render("register", templateVars);
 
+    res.redirect("/urls");
 });
 
 //receives logout, deletes username from cookie
