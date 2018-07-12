@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require ('morgan');
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
 const PORT = 8080;
@@ -38,7 +38,13 @@ const app = express();
 app.set('view engine', 'ejs');
 
 //middleware
-app.use(cookieParser());
+app.use(cookieSession({
+    name: 'session',
+    keys: ["Cats Rule The World"],
+  
+    // Cookie Options
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
@@ -55,9 +61,9 @@ app.get("/urls.json", (req, res) => {
 });
 
 //lists all URLs in a prettier format
-//passes in username cookie
+//passes in username session
 app.get("/urls", (req, res) => {
-    let user_id = req.cookies.user_id;
+    let user_id = req.session.user_id;
 
     //if user is not logged in, send error message saying they should login first
     if (user_id === undefined){
@@ -70,22 +76,22 @@ app.get("/urls", (req, res) => {
     let templateVars = {
         urls: urlList,
         users: users,
-        cookie: req.cookies
+        cookie: req.session
     }
 
     res.render("urls_index", templateVars);
 });
 
 //shows create new url page
-//passes in username cookie
+//passes in username session
 app.get("/urls/new", (req, res) => {
-    let user_id = req.cookies.user_id;
+    let user_id = req.session.user_id;
 
     //only allows a logged in user to register new urls, otherwise redirects to login page
     if (isLoggedIn(user_id)){
         let templateVars = {
             users: users,
-            cookie: req.cookies
+            cookie: req.session
         };
     
         res.render("urls_new", templateVars);
@@ -95,7 +101,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 //shows more detailed info on a particular shortened URL
-//passes in username cookie
+//passes in username session
 app.get("/urls/:id", (req, res) => {
     //finds shortURL from database, renders page
     if (urlDatabase[req.params.id] != undefined) {
@@ -103,7 +109,7 @@ app.get("/urls/:id", (req, res) => {
             shortURL: req.params.id,
             urls: urlDatabase,
             users: users,
-            cookie: req.cookies
+            cookie: req.session
         };
         res.render("urls_show", templateVars);
     }
@@ -130,7 +136,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/register", (req, res) => {
     let templateVars = {
         users: users,
-        cookie: req.cookies
+        cookie: req.session
     };
     res.render("register", templateVars);
 });
@@ -139,7 +145,7 @@ app.get("/register", (req, res) => {
 app.get("/login", (req, res) => {
     let templateVars = {
         users: users,
-        cookie: req.cookies
+        cookie: req.session
     };
     res.render("login", templateVars);
 });
@@ -148,7 +154,7 @@ app.get("/login", (req, res) => {
 app.post("/register", (req, res) => {
     let templateVars = {
         users: users,
-        cookie: req.cookies
+        cookie: req.session
     };
 
     let inputEmail = req.body.email;
@@ -174,13 +180,13 @@ app.post("/register", (req, res) => {
 
     users[newUser.id] = newUser;
 
-    res.cookie("user_id", newUser.id);
+    req.session.user_id = newUser.id;
     res.redirect("/urls");
 });
 
-//receives logout, deletes username from cookie
+//receives logout, deletes username from session
 app.post("/logout", (req, res) => {
-    res.clearCookie("user_id");
+    req.session = null;
 
     res.redirect('/login');
 });
@@ -216,7 +222,7 @@ app.post("/login", (req, res) => {
         return;
     }
 
-    res.cookie("user_id", userId);
+    req.session.user_id = userId;
     res.redirect("/urls");
 });
 
@@ -227,7 +233,7 @@ app.post("/urls", (req, res) => {
     urlDatabase[shortenedURL] = {};
     urlDatabase[shortenedURL].shortURL = shortenedURL;
     urlDatabase[shortenedURL].longURL = longURL;
-    urlDatabase[shortenedURL].userID = req.cookies.user_id;
+    urlDatabase[shortenedURL].userID = req.session.user_id;
 
     res.redirect(`/urls/${shortenedURL}`);
 });
