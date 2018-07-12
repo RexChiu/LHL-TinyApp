@@ -85,6 +85,12 @@ app.get("/u/:shortURL", (req, res) => {
     }
 });
 
+//receives request to register
+app.get("/register", (req, res) => {
+    res.render("register");
+
+});
+
 //receives logout, deletes username from cookie
 app.post("/logout", (req, res) => {
     res.clearCookie("username");
