@@ -170,13 +170,40 @@ app.get("/u/:shortURL", (req, res) => {
     res.redirect(longURL);
 });
 
-//receives get request to register
-app.get("/register", (req, res) => {
-    let templateVars = {
-        users: users,
-        cookie: req.session
-    };
-    res.render("register", templateVars);
+//receives new longURL, generates a shortURL and redirects to show shortURL
+app.post("/urls", (req, res) => {
+    let user_id = req.session.user_id;
+
+    //only allows a logged in user to post a new longURL
+    if (isLoggedIn(user_id)) {
+        let longURL = req.body.longURL;
+        let shortenedURL = generateRandomString();
+        urlDatabase[shortenedURL] = {};
+        urlDatabase[shortenedURL].shortURL = shortenedURL;
+        urlDatabase[shortenedURL].longURL = longURL;
+        urlDatabase[shortenedURL].userID = req.session.user_id;
+        urlDatabase[shortenedURL].numVisited = 0;
+    
+        res.redirect(`/urls/${shortenedURL}`);
+    } else {
+        res.status(401).send("User not logged in!");
+    }
+});
+
+//receives command to modify the longURL of a shortURL
+app.post("/urls/:id", (req, res) => {
+    let shortURL = req.params.id;
+    urlDatabase[shortURL].longURL = req.body.longURL;
+
+    res.redirect(`/urls/${shortURL}`);
+});
+
+//receives command to delete the URL, deletes from database
+app.post("/urls/:id/delete", (req, res) => {
+    let shortURL = req.params.id;
+    delete urlDatabase[shortURL];
+
+    res.redirect("/urls");
 });
 
 //receives get request to login
@@ -186,6 +213,50 @@ app.get("/login", (req, res) => {
         cookie: req.session
     };
     res.render("login", templateVars);
+});
+
+//receives get request to register
+app.get("/register", (req, res) => {
+    let templateVars = {
+        users: users,
+        cookie: req.session
+    };
+    res.render("register", templateVars);
+});
+
+//recieves login post, tries to login user
+app.post("/login", (req, res) => {
+    let userExists = false;
+    let passwordMatch = false;
+    let inputEmail = req.body.email;
+    let inputPassword = req.body.password;
+    let userId = null;
+
+    //checks if email exists 
+    for (let key in users) {
+        if (users[key].email == inputEmail) {
+            userExists = true;
+            userId = users[key].id;
+        }
+    }
+    if (userExists == false) {
+        res.status(403).send("Email does not exist");
+        return;
+    }
+
+    for (let key in users) {
+        // if (users[key].password == inputPassword){
+        if (bcrypt.compareSync(inputPassword, users[key].password)) {
+            passwordMatch = true;
+        }
+    }
+    if (passwordMatch == false) {
+        res.status(403).send("Password does not match");
+        return;
+    }
+
+    req.session.user_id = userId;
+    res.redirect("/urls");
 });
 
 //receives post request to register with credentials
@@ -227,77 +298,6 @@ app.post("/logout", (req, res) => {
     req.session = null;
 
     res.redirect('/login');
-});
-
-//recieves login post, tries to login user
-app.post("/login", (req, res) => {
-    let userExists = false;
-    let passwordMatch = false;
-    let inputEmail = req.body.email;
-    let inputPassword = req.body.password;
-    let userId = null;
-
-    //checks if email exists 
-    for (let key in users) {
-        if (users[key].email == inputEmail) {
-            userExists = true;
-            userId = users[key].id;
-        }
-    }
-    if (userExists == false) {
-        res.status(403).send("Email does not exist");
-        return;
-    }
-
-    for (let key in users) {
-        // if (users[key].password == inputPassword){
-        if (bcrypt.compareSync(inputPassword, users[key].password)) {
-            passwordMatch = true;
-        }
-    }
-    if (passwordMatch == false) {
-        res.status(403).send("Password does not match");
-        return;
-    }
-
-    req.session.user_id = userId;
-    res.redirect("/urls");
-});
-
-//receives new longURL, generates a shortURL and redirects to show shortURL
-app.post("/urls", (req, res) => {
-    let user_id = req.session.user_id;
-
-    //only allows a logged in user to post a new longURL
-    if (isLoggedIn(user_id)) {
-        let longURL = req.body.longURL;
-        let shortenedURL = generateRandomString();
-        urlDatabase[shortenedURL] = {};
-        urlDatabase[shortenedURL].shortURL = shortenedURL;
-        urlDatabase[shortenedURL].longURL = longURL;
-        urlDatabase[shortenedURL].userID = req.session.user_id;
-        urlDatabase[shortenedURL].numVisited = 0;
-    
-        res.redirect(`/urls/${shortenedURL}`);
-    } else {
-        res.status(401).send("User not logged in!");
-    }
-});
-
-//receives command to delete the URL, deletes from database
-app.post("/urls/:id/delete", (req, res) => {
-    let shortURL = req.params.id;
-    delete urlDatabase[shortURL];
-
-    res.redirect("/urls");
-});
-
-//receives command to modify the longURL of a shortURL
-app.post("/urls/:id", (req, res) => {
-    let shortURL = req.params.id;
-    urlDatabase[shortURL].longURL = req.body.longURL;
-
-    res.redirect(`/urls/${shortURL}`);
 });
 
 app.listen(PORT, () => {
