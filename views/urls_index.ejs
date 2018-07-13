@@ -7,46 +7,46 @@
 
 <body>
     <ul>
-        <% for(var url in urls) { %>
+        <% for(var shortURL in urls) { %>
             <h2>Shortened URL:
-                <%= url %>
+                <%= shortURL %>
             </h2>
             <li>Full URL:
-                <%= urls[url].longURL %>
+                <%= urls[shortURL].longURL %>
             </li>
             <br>
             <li>Number of Visitors:
-                <%= urls[url].numVisited %>
+                <%= urls[shortURL].numVisited %>
             </li>
             <br>
             <li>Date Created:
-                <%= urls[url].dateCreated.toDateString() %>
+                <%= urls[shortURL].dateCreated.toDateString() %>
             </li>
             <br>
             <li>Unique Visitors:
-                <%= Object.keys(urls[url].uniqueVisits).length; %>
+                <%= Object.keys(urls[shortURL].uniqueVisits).length; %>
             </li>
             <br>
             <li>Unique Visits:
                 <br>
-                <% for (let key in urls[url].uniqueVisits) { %>
-                    <%= key %>: <%= urls[url].uniqueVisits[key] %>
+                <% for (let key in urls[shortURL].uniqueVisits) { %>
+                    <%= key %>: <%= urls[shortURL].uniqueVisits[key] %>
                     <br>
                 <% } %>
             </li>
             <br>
             <li>Hyperlink:
-                <a href="localhost:8080/u/<%= url %>">localhost:8080/u/<%= url %></a>
+                <a href="localhost:8080/u/<%= shortURL %>">localhost:8080/u/<%= shortURL %></a>
             </li>
             <br>
             <li>
-                <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE">
+                <form method="POST" action="/urls/<%= shortURL %>/delete?_method=DELETE">
                     <label for="urlDelete">Delete URL:</label>
                     <input type="submit" value="Submit">
                 </form>
             </li>
             <li>
-                <a href="localhost:8080/urls/<%= url %>">Edit</a>
+                <a href="localhost:8080/urls/<%= shortURL %>">Edit</a>
             </li>
             <br>
             <% } %>

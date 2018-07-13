@@ -8,26 +8,37 @@
 <body>
     <ul>
         <% if (urls[shortURL].userID == cookie.user_id) { %>
-            <li>Full URL:
-                <%= urls[shortURL].longURL %>
-            </li>
-            <li>Shortened URL:
-                <%= shortURL %>
-            </li>
-            <li>Number of Visitors:
-                <%= urls[shortURL].numVisited %>
-            </li>
-            <li>Date Created:
-                <%= urls[shortURL].dateCreated.toDateString() %>
-            </li>
-            <li>Unique Visitors:
-                <%= Object.keys(urls[shortURL].uniqueVisits).length; %>
-            </li>
-            <li>Unique Visits:
-                <% for (let key in urls[shortURL].uniqueVisits) { %>
-                    <%= key %>: <%= urls[shortURL].uniqueVisits[key].toDateString() %>
-                <% } %>
-            </li>
+            <h2>Shortened URL:
+                    <%= shortURL %>
+                </h2>
+                <li>Full URL:
+                    <%= urls[shortURL].longURL %>
+                </li>
+                <br>
+                <li>Number of Visitors:
+                    <%= urls[shortURL].numVisited %>
+                </li>
+                <br>
+                <li>Date Created:
+                    <%= urls[shortURL].dateCreated.toDateString() %>
+                </li>
+                <br>
+                <li>Unique Visitors:
+                    <%= Object.keys(urls[shortURL].uniqueVisits).length; %>
+                </li>
+                <br>
+                <li>Unique Visits:
+                    <br>
+                    <% for (let key in urls[shortURL].uniqueVisits) { %>
+                        <%= key %>: <%= urls[shortURL].uniqueVisits[key] %>
+                        <br>
+                    <% } %>
+                </li>
+                <br>
+                <li>Hyperlink:
+                    <a href="localhost:8080/u/<%= shortURL %>">localhost:8080/u/<%= shortURL %></a>
+                </li>
+                <br>
             <form action="/urls/<%= shortURL %>?_method=PUT" method="POST">
                 <li>Edit:
                 <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
