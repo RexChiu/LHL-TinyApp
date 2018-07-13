@@ -13,21 +13,24 @@ const urlDatabase = {
         longURL: "http://www.lighthouselabs.ca",
         userID: "Cats",
         numVisited: 4,
-        dateCreated: new Date()
+        dateCreated: new Date(),
+        uniqueVisits: [{Cats: new Date()}, {Dogs: new Date()}]
     },
     "FluffyCatsURL": {
         shortURL: "FluffyCatsURL",
         longURL: "http://www.cats.ca",
         userID: "Cats",
         numVisited: 45,
-        dateCreated: new Date()
+        dateCreated: new Date(),
+        uniqueVisits: []
     },
     "DogsURL": {
         shortURL: "DogsURL",
         longURL: "http://www.google.com",
         userID: "Dogs",
         numVisited: 7,
-        dateCreated: new Date()
+        dateCreated: new Date(),
+        uniqueVisits: []
     }
 };
 
@@ -159,6 +162,12 @@ app.get("/u/:shortURL", (req, res) => {
 
     let longURL = urlDatabase[shortURL].longURL;
 
+    //generates a unique vistor ID
+    if (req.session.visitor_id === undefined){
+        req.session.visitor_id = generateRandomString();
+    }
+    urlDatabase[shortURL].uniqueVisits.push({visitor_id: new Date()});
+    
     //increment numVisited counter
     urlDatabase[shortURL].numVisited += 1;
     res.redirect(longURL);
