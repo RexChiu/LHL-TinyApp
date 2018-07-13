@@ -21,7 +21,7 @@
                 <a href="localhost:8080/u/<%= url %>">localhost:8080/u/<%= url %></a>
             </li>
             <li>
-                <form method="POST" action="/urls/<%= url %>/delete">
+                <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE">
                     <label for="urlDelete">Delete URL:</label>
                     <input type="submit" value="Submit">
                 </form>
