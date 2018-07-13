@@ -313,13 +313,13 @@ app.post("/register", (req, res) => {
 
     //error checking for registration
     if (inputEmail === "" || inputPassword === "") {
-        res.status(400).send("Email or Password cannot be empty strings!");
+        res.status(401).send("Email or Password cannot be empty strings!");
         return;
     }
     //checks if email exists already
     for (let key in users) {
         if (inputEmail == users[key].email) {
-            res.status(400).send("Email already exists!");
+            res.status(401).send("Email already exists!");
             return;
         }
     }
@@ -337,6 +337,7 @@ app.post("/register", (req, res) => {
 
 //receives logout, deletes username from session
 app.post("/logout", (req, res) => {
+    //deletes cookie
     req.session = null;
 
     res.redirect('/login');
