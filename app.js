@@ -14,7 +14,10 @@ const urlDatabase = {
         userID: "Cats",
         numVisited: 4,
         dateCreated: new Date(),
-        uniqueVisits: [{Cats: new Date()}, {Dogs: new Date()}]
+        uniqueVisits: {
+            uniqueCat: [new Date()],
+            uniqueDog: [new Date(), new Date()]
+        }
     },
     "FluffyCatsURL": {
         shortURL: "FluffyCatsURL",
@@ -63,6 +66,16 @@ app.use(cookieSession({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
+app.use(function (req, res, next) {
+    console.log(req.method + ": " +req.path);
+    console.log(req.cookies);
+    console.log('- - - - - - - - - - - - - -');
+    console.log(users);
+    console.log('- - - - - - - - - - - - - -');
+    console.log(urlDatabase);
+    console.log('###########################');
+    next();
+  });
 
 //routes
 
@@ -161,12 +174,13 @@ app.get("/u/:shortURL", (req, res) => {
     }
 
     let longURL = urlDatabase[shortURL].longURL;
+    let visitorID = req.session.visitor_id;
 
     //generates a unique vistor ID
-    if (req.session.visitor_id === undefined){
-        req.session.visitor_id = generateRandomString();
+    if (visitorID === undefined){
+        visitorID = generateRandomString();
     }
-    urlDatabase[shortURL].uniqueVisits.push({visitor_id: new Date()});
+    urlDatabase[shortURL].uniqueVisits.push({visitorID: new Date()});
     
     //increment numVisited counter
     urlDatabase[shortURL].numVisited += 1;
