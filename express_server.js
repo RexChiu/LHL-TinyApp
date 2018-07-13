@@ -266,15 +266,22 @@ app.post("/login", (req, res) => {
 
 //receives new longURL, generates a shortURL and redirects to show shortURL
 app.post("/urls", (req, res) => {
-    let longURL = req.body.longURL;
-    let shortenedURL = generateRandomString();
-    urlDatabase[shortenedURL] = {};
-    urlDatabase[shortenedURL].shortURL = shortenedURL;
-    urlDatabase[shortenedURL].longURL = longURL;
-    urlDatabase[shortenedURL].userID = req.session.user_id;
-    urlDatabase[shortenedURL].numVisited = 0;
+    let user_id = req.session.user_id;
 
-    res.redirect(`/urls/${shortenedURL}`);
+    //only allows a logged in user to post a new longURL
+    if (isLoggedIn(user_id)) {
+        let longURL = req.body.longURL;
+        let shortenedURL = generateRandomString();
+        urlDatabase[shortenedURL] = {};
+        urlDatabase[shortenedURL].shortURL = shortenedURL;
+        urlDatabase[shortenedURL].longURL = longURL;
+        urlDatabase[shortenedURL].userID = req.session.user_id;
+        urlDatabase[shortenedURL].numVisited = 0;
+    
+        res.redirect(`/urls/${shortenedURL}`);
+    } else {
+        res.status(401).send("User not logged in!");
+    }
 });
 
 //receives command to delete the URL, deletes from database
