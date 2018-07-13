@@ -58,7 +58,7 @@ app.use(morgan('dev'));
 
 //debugging code
 app.use(function (req, res, next) {
-    console.log(req.method + ": " +req.path);
+    console.log(req.method + ": " + req.path);
     console.log(req.cookies);
     console.log('- - - - - - - - - - - - - -');
     console.log(users);
@@ -66,7 +66,7 @@ app.use(function (req, res, next) {
     console.log(urlDatabase);
     console.log('###########################');
     next();
-  });
+});
 
 //routes
 
@@ -126,19 +126,26 @@ app.get("/urls/new", (req, res) => {
 //shows more detailed info on a particular shortened URL
 //passes in username session
 app.get("/urls/:id", (req, res) => {
-    //finds shortURL from database, renders page
-    if (urlDatabase[req.params.id] != undefined) {
-        let templateVars = {
-            shortURL: req.params.id,
-            urls: urlDatabase,
-            users: users,
-            cookie: req.session
-        };
-        res.render("urls_show", templateVars);
-    }
-    //send 404 not found if id does not exist
-    else {
-        res.status(404).send('Error: URL not found');
+    let user_id = req.session.user_id;
+
+    //only allows a logged in user to see urls
+    if (isLoggedIn(user_id)) {
+        //finds shortURL from database, renders page
+        if (urlDatabase[req.params.id] != undefined) {
+            let templateVars = {
+                shortURL: req.params.id,
+                urls: urlDatabase,
+                users: users,
+                cookie: req.session
+            };
+            res.render("urls_show", templateVars);
+        }
+        //send 404 not found if id does not exist
+        else {
+            res.status(404).send('Error: URL not found!');
+        }
+    } else {
+        res.status(401).send("User not logged in!");
     }
 });
 
