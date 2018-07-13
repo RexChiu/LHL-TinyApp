@@ -25,7 +25,7 @@ const urlDatabase = {
         userID: "Cats",
         numVisited: 45,
         dateCreated: new Date(),
-        uniqueVisits: []
+        uniqueVisits: {}
     },
     "DogsURL": {
         shortURL: "DogsURL",
@@ -33,7 +33,7 @@ const urlDatabase = {
         userID: "Dogs",
         numVisited: 7,
         dateCreated: new Date(),
-        uniqueVisits: []
+        uniqueVisits: {}
     }
 };
 
@@ -175,12 +175,20 @@ app.get("/u/:shortURL", (req, res) => {
 
     let longURL = urlDatabase[shortURL].longURL;
     let visitorID = req.session.visitor_id;
+    console.log(req.session.visitor_id + "--------------------");
 
     //generates a unique vistor ID
-    if (visitorID === undefined){
+    if (visitorID == "" || visitorID === undefined){
         visitorID = generateRandomString();
+        req.session.visitor_id = visitorID;
     }
-    urlDatabase[shortURL].uniqueVisits.push({visitorID: new Date()});
+    //if uniqueVisits doesnt have visitorID as key, create new array
+    if (urlDatabase[shortURL].uniqueVisits[visitorID] === undefined){
+        urlDatabase[shortURL].uniqueVisits[visitorID] = [];
+        
+    }
+    //otherwise push it onto visitor array directly
+    urlDatabase[shortURL].uniqueVisits[visitorID].push(new Date());
     
     //increment numVisited counter
     urlDatabase[shortURL].numVisited += 1;

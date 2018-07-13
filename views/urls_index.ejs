@@ -20,6 +20,16 @@
             <li>Date Created:
                 <%= urls[url].dateCreated.toDateString() %>
             </li>
+            <li>Unique Visitors:
+                <%= Object.keys(urls[url].uniqueVisits).length; %>
+            </li>
+            <li>Unique Visits:
+                <br>
+                <% for (let key in urls[url].uniqueVisits) { %>
+                    <%= key %>: <%= urls[url].uniqueVisits[key] %>
+                    <br>
+                <% } %>
+            </li>
             <li>Hyperlink:
                 <a href="localhost:8080/u/<%= url %>">localhost:8080/u/<%= url %></a>
             </li>

@@ -20,6 +20,14 @@
             <li>Date Created:
                 <%= urls[shortURL].dateCreated.toDateString() %>
             </li>
+            <li>Unique Visitors:
+                <%= Object.keys(urls[shortURL].uniqueVisits).length; %>
+            </li>
+            <li>Unique Visits:
+                <% for (let key in urls[shortURL].uniqueVisits) { %>
+                    <%= key %>: <%= urls[shortURL].uniqueVisits[key].toDateString() %>
+                <% } %>
+            </li>
             <form action="/urls/<%= shortURL %>?_method=PUT" method="POST">
                 <li>Edit:
                 <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
