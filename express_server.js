@@ -183,7 +183,7 @@ app.post("/urls", (req, res) => {
         urlDatabase[shortenedURL].longURL = longURL;
         urlDatabase[shortenedURL].userID = req.session.user_id;
         urlDatabase[shortenedURL].numVisited = 0;
-    
+
         res.redirect(`/urls/${shortenedURL}`);
     } else {
         res.status(401).send("User not logged in!");
@@ -192,27 +192,59 @@ app.post("/urls", (req, res) => {
 
 //receives command to modify the longURL of a shortURL
 app.post("/urls/:id", (req, res) => {
+    let user_id = req.session.user_id;
     let shortURL = req.params.id;
-    urlDatabase[shortURL].longURL = req.body.longURL;
 
-    res.redirect(`/urls/${shortURL}`);
+    //only allows a logged in user to modify the longURL of a shortURL
+    if (isLoggedIn(user_id)) {
+        //if logged in user does not match URL owner, send unauthorized error
+        if (urlDatabase[shortURL].userID != user_id) {
+            res.status(403).send("User authorized to modify this URL!");
+            return;
+        }
+
+        //modifies longURL and redirects to /url
+        urlDatabase[shortURL].longURL = req.body.longURL;
+        res.redirect("/urls");
+    } else {
+        res.status(401).send("User not logged in!");
+    }
 });
 
 //receives command to delete the URL, deletes from database
 app.post("/urls/:id/delete", (req, res) => {
+    let user_id = req.session.user_id;
     let shortURL = req.params.id;
-    delete urlDatabase[shortURL];
 
-    res.redirect("/urls");
+    //only allows a logged in user to delete a URL
+    if (isLoggedIn(user_id)) {
+        if (urlDatabase[shortURL].userID != user_id) {
+            res.status(403).send("User authorized to delete this URL!");
+            return;
+        }
+
+        //deletes URL and redirects to /urls
+        delete urlDatabase[shortURL];
+        res.redirect("/urls");
+    } else {
+        res.status(401).send("User not logged in!");
+    }
 });
 
 //receives get request to login
 app.get("/login", (req, res) => {
-    let templateVars = {
-        users: users,
-        cookie: req.session
-    };
-    res.render("login", templateVars);
+    let user_id = req.session.user_id;
+
+    //if a user is logged in, redirect to /urls
+    if (isLoggedIn(user_id)) {
+        res.redirect("/urls");
+    } else {
+        let templateVars = {
+            users: users,
+            cookie: req.session
+        };
+        res.render("login", templateVars);
+    }
 });
 
 //receives get request to register
@@ -321,7 +353,7 @@ function generateRandomString() {
 //function to check if the user_id is in the users database
 function isLoggedIn(user_id) {
     //if user_id is undefined (not logged in), immediately return false
-    if (user_id === undefined){
+    if (user_id === undefined) {
         return false;
     }
     //loop through users and see if user_id is in database
