@@ -52,7 +52,7 @@ app.use(cookieSession({
 
     // Cookie Options
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
@@ -89,7 +89,7 @@ app.get("/urls", (req, res) => {
         urls: urlList,
         users: users,
         cookie: req.session
-    }
+    };
 
     res.render("urls_index", templateVars);
 });
