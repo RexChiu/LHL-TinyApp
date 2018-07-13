@@ -17,6 +17,9 @@
             <li>Number of Visitors:
                 <%= urls[shortURL].numVisited %>
             </li>
+            <li>Date Created:
+                <%= urls[shortURL].dateCreated.toDateString() %>
+            </li>
             <form action="/urls/<%= shortURL %>?_method=PUT" method="POST">
                 <li>Edit:
                 <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">

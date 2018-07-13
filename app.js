@@ -12,19 +12,22 @@ const urlDatabase = {
         shortURL: "CatsURL",
         longURL: "http://www.lighthouselabs.ca",
         userID: "Cats",
-        numVisited: 4
+        numVisited: 4,
+        dateCreated: new Date()
     },
     "FluffyCatsURL": {
         shortURL: "FluffyCatsURL",
         longURL: "http://www.cats.ca",
         userID: "Cats",
-        numVisited: 45
+        numVisited: 45,
+        dateCreated: new Date()
     },
     "DogsURL": {
         shortURL: "DogsURL",
         longURL: "http://www.google.com",
         userID: "Dogs",
-        numVisited: 7
+        numVisited: 7,
+        dateCreated: new Date()
     }
 };
 
@@ -174,6 +177,7 @@ app.post("/urls", (req, res) => {
         urlDatabase[shortenedURL].longURL = longURL;
         urlDatabase[shortenedURL].userID = req.session.user_id;
         urlDatabase[shortenedURL].numVisited = 0;
+        urlDatabase[shortenedURL].dateCreated = new Date();
 
         res.redirect(`/urls/${shortenedURL}`);
     } else {

@@ -17,6 +17,9 @@
             <li>Number of Visitors:
                 <%= urls[url].numVisited %>
             </li>
+            <li>Date Created:
+                <%= urls[url].dateCreated.toDateString() %>
+            </li>
             <li>Hyperlink:
                 <a href="localhost:8080/u/<%= url %>">localhost:8080/u/<%= url %></a>
             </li>
