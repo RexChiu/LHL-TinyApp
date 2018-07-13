@@ -8,21 +8,25 @@
 <body>
     <ul>
         <% for(var url in urls) { %>
-            <li>Shortened URL:
+            <h2>Shortened URL:
                 <%= url %>
-            </li>
+            </h2>
             <li>Full URL:
                 <%= urls[url].longURL %>
             </li>
+            <br>
             <li>Number of Visitors:
                 <%= urls[url].numVisited %>
             </li>
+            <br>
             <li>Date Created:
                 <%= urls[url].dateCreated.toDateString() %>
             </li>
+            <br>
             <li>Unique Visitors:
                 <%= Object.keys(urls[url].uniqueVisits).length; %>
             </li>
+            <br>
             <li>Unique Visits:
                 <br>
                 <% for (let key in urls[url].uniqueVisits) { %>
@@ -30,9 +34,11 @@
                     <br>
                 <% } %>
             </li>
+            <br>
             <li>Hyperlink:
                 <a href="localhost:8080/u/<%= url %>">localhost:8080/u/<%= url %></a>
             </li>
+            <br>
             <li>
                 <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE">
                     <label for="urlDelete">Delete URL:</label>
@@ -42,11 +48,9 @@
             <li>
                 <a href="localhost:8080/urls/<%= url %>">Edit</a>
             </li>
-            <li>
-                <a href="localhost:8080/urls/new">Create a New Short Link</a>
-            </li>
             <br>
             <% } %>
+            <a href="localhost:8080/urls/new">Create a New Short Link</a>
     </ul>
 </body>
 
