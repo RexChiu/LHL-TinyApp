@@ -249,11 +249,18 @@ app.get("/login", (req, res) => {
 
 //receives get request to register
 app.get("/register", (req, res) => {
-    let templateVars = {
-        users: users,
-        cookie: req.session
-    };
-    res.render("register", templateVars);
+    let user_id = req.session.user_id;
+
+    //if a user is logged in, redirect to /urls
+    if (isLoggedIn(user_id)) {
+        res.redirect("/urls");
+    } else {
+        let templateVars = {
+            users: users,
+            cookie: req.session
+        };
+        res.render("register", templateVars);
+    }
 });
 
 //recieves login post, tries to login user
@@ -272,7 +279,7 @@ app.post("/login", (req, res) => {
         }
     }
     if (userExists == false) {
-        res.status(403).send("Email does not exist");
+        res.status(403).send("Email does not exist or Password does not match!");
         return;
     }
 
@@ -283,7 +290,7 @@ app.post("/login", (req, res) => {
         }
     }
     if (passwordMatch == false) {
-        res.status(403).send("Password does not match");
+        res.status(403).send("Email does not exist or Password does not match!");
         return;
     }
 
