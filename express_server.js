@@ -132,6 +132,11 @@ app.get("/urls/:id", (req, res) => {
     if (isLoggedIn(user_id)) {
         //finds shortURL from database, renders page
         if (urlDatabase[req.params.id] != undefined) {
+            //if userID does not match the owner of the URL, display error
+            if (urlDatabase[req.params.id].userID != user_id){
+                res.status(403).send("User authorized to view this URL!");
+                return;
+            }
             let templateVars = {
                 shortURL: req.params.id,
                 urls: urlDatabase,
