@@ -122,7 +122,7 @@ app.get("/urls/:id", (req, res) => {
         if (urlDatabase[req.params.id] != undefined) {
             //if userID does not match the owner of the URL, display error
             if (urlDatabase[req.params.id].userID != user_id) {
-                res.status(403).send("User authorized to view this URL!");
+                res.status(403).send("User not authorized to view this URL!");
                 return;
             }
             let templateVars = {
@@ -187,7 +187,7 @@ app.post("/urls/:id", (req, res) => {
     if (isLoggedIn(user_id)) {
         //if logged in user does not match URL owner, send unauthorized error
         if (urlDatabase[shortURL].userID != user_id) {
-            res.status(403).send("User authorized to modify this URL!");
+            res.status(403).send("User not authorized to modify this URL!");
             return;
         }
 
