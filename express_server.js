@@ -278,22 +278,25 @@ app.post("/login", (req, res) => {
             userId = users[key].id;
         }
     }
+    //if user does not exist in database, return 401 authentication error
     if (userExists == false) {
-        res.status(403).send("Email does not exist or Password does not match!");
+        res.status(401).send("Email does not exist or Password does not match!");
         return;
     }
-
+    //checks if password matches
     for (let key in users) {
         // if (users[key].password == inputPassword){
         if (bcrypt.compareSync(inputPassword, users[key].password)) {
             passwordMatch = true;
         }
     }
+    //if user does not exist in database, return 401 authentication error
     if (passwordMatch == false) {
-        res.status(403).send("Email does not exist or Password does not match!");
+        res.status(401).send("Email does not exist or Password does not match!");
         return;
     }
 
+    //successful login at this point, sets cookie, redirect
     req.session.user_id = userId;
     res.redirect("/urls");
 });
