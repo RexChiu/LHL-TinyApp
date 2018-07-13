@@ -82,6 +82,7 @@ app.get("/urls", (req, res) => {
         return;
     }
 
+    //grabs urls that the user owns
     let urlList = urlsForUser(user_id);
 
     let templateVars = {
