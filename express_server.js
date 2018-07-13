@@ -278,7 +278,7 @@ app.post("/urls", (req, res) => {
         urlDatabase[shortenedURL].userID = req.session.user_id;
         urlDatabase[shortenedURL].numVisited = 0;
     
-        res.redirect(`/urls/${shortenedURL}`);
+        res.redirect("/urls");
     } else {
         res.status(401).send("User not logged in!");
     }
