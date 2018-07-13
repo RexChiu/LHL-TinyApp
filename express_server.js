@@ -133,7 +133,7 @@ app.get("/urls/:id", (req, res) => {
         //finds shortURL from database, renders page
         if (urlDatabase[req.params.id] != undefined) {
             //if userID does not match the owner of the URL, display error
-            if (urlDatabase[req.params.id].userID != user_id){
+            if (urlDatabase[req.params.id].userID != user_id) {
                 res.status(403).send("User authorized to view this URL!");
                 return;
             }
@@ -158,16 +158,16 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
 
+    if (urlDatabase[shortURL] === undefined) {
+        res.status(404).send('Error: URL not found');
+        return;
+    }
+
     let longURL = urlDatabase[shortURL].longURL;
 
     //increment numVisited counter
     urlDatabase[shortURL].numVisited += 1;
-
-    if (longURL != undefined) {
-        res.redirect(longURL);
-    } else {
-        res.status(404).send('Error: URL not found');
-    }
+    res.redirect(longURL);
 });
 
 //receives get request to register
