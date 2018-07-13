@@ -30,12 +30,12 @@ const urlDatabase = {
 const users = {
     "Cats": {
         id: "Cats",
-        email: "Cats",
+        email: "Cats@Cats.Cats",
         password: "$2a$10$pqsXXKoQmBuaKQ.Tg0RJ/eafwvr3pF49IMi6ovoq8fRwwVBPE6r0K"
     },
     "Dogs": {
         id: "Dogs",
-        email: "Dogs",
+        email: "Dogs@Dogs.Dogs",
         password: "$2a$10$phBSKcWhdBUYjnwh4vmIyO72DTBT0fAVgWLe8qRyF1vug2eu6mnXK"
     }
 };
