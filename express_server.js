@@ -56,18 +56,6 @@ app.use(cookieSession({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-//debugging code
-app.use(function (req, res, next) {
-    console.log(req.method + ": " + req.path);
-    console.log(req.cookies);
-    console.log('- - - - - - - - - - - - - -');
-    console.log(users);
-    console.log('- - - - - - - - - - - - - -');
-    console.log(urlDatabase);
-    console.log('###########################');
-    next();
-});
-
 //routes
 
 //redirect localhost to create new URL
