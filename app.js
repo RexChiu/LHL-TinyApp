@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const morgan = require('morgan');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
+const methodOverride = require('method-override');
 
 const PORT = 8080;
 
@@ -54,6 +55,7 @@ app.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 app.use(morgan('dev'));
 
 //routes
@@ -180,7 +182,7 @@ app.post("/urls", (req, res) => {
 });
 
 //receives command to modify the longURL of a shortURL
-app.post("/urls/:id", (req, res) => {
+app.put("/urls/:id", (req, res) => {
     let user_id = req.session.user_id;
     let shortURL = req.params.id;
 
@@ -201,7 +203,7 @@ app.post("/urls/:id", (req, res) => {
 });
 
 //receives command to delete the URL, deletes from database
-app.post("/urls/:id/delete", (req, res) => {
+app.delete("/urls/:id/delete", (req, res) => {
     let user_id = req.session.user_id;
     let shortURL = req.params.id;
 
