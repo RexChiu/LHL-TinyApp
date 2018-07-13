@@ -13,6 +13,12 @@ const urlDatabase = {
         userID: "Cats",
         numVisited: 4
     },
+    "FluffyCatsURL": {
+        shortURL: "FluffyCatsURL",
+        longURL: "http://www.cats.ca",
+        userID: "Cats",
+        numVisited: 45
+    },
     "DogsURL": {
         shortURL: "DogsURL",
         longURL: "http://www.google.com",
@@ -49,6 +55,18 @@ app.use(cookieSession({
 }))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+
+//debugging code
+app.use(function (req, res, next) {
+    console.log(req.method + ": " +req.path);
+    console.log(req.cookies);
+    console.log('- - - - - - - - - - - - - -');
+    console.log(users);
+    console.log('- - - - - - - - - - - - - -');
+    console.log(urlDatabase);
+    console.log('###########################');
+    next();
+  });
 
 //routes
 
@@ -242,6 +260,7 @@ app.post("/urls", (req, res) => {
     urlDatabase[shortenedURL].shortURL = shortenedURL;
     urlDatabase[shortenedURL].longURL = longURL;
     urlDatabase[shortenedURL].userID = req.session.user_id;
+    urlDatabase[shortenedURL].numVisited = 0;
 
     res.redirect(`/urls/${shortenedURL}`);
 });
@@ -257,9 +276,9 @@ app.post("/urls/:id/delete", (req, res) => {
 //receives command to modify the longURL of a shortURL
 app.post("/urls/:id", (req, res) => {
     let shortURL = req.params.id;
-    urlDatabase[shortURL] = req.body.longURL;
+    urlDatabase[shortURL].longURL = req.body.longURL;
 
-    res.redirect("/urls");
+    res.redirect(`/urls/${shortURL}`);
 });
 
 app.listen(PORT, () => {
