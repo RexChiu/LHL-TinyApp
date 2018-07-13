@@ -313,6 +313,11 @@ function generateRandomString() {
 
 //function to check if the user_id is in the users database
 function isLoggedIn(user_id) {
+    //if user_id is undefined (not logged in), immediately return false
+    if (user_id === undefined){
+        return false;
+    }
+    //loop through users and see if user_id is in database
     for (let key in users) {
         if (users[key].id == user_id) {
             return true;
