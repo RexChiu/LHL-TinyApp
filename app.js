@@ -203,12 +203,14 @@ app.post("/urls", (req, res) => {
     if (isLoggedIn(user_id)) {
         let longURL = req.body.longURL;
         let shortenedURL = generateRandomString();
+
         urlDatabase[shortenedURL] = {};
         urlDatabase[shortenedURL].shortURL = shortenedURL;
         urlDatabase[shortenedURL].longURL = longURL;
         urlDatabase[shortenedURL].userID = req.session.user_id;
         urlDatabase[shortenedURL].numVisited = 0;
         urlDatabase[shortenedURL].dateCreated = new Date();
+        urlDatabase[shortenedURL].uniqueVisits = {};
 
         res.redirect(`/urls/${shortenedURL}`);
     } else {
