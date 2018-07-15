@@ -57,12 +57,12 @@ const urlDatabase = {
 const users = {
     "Cats": {
         id: "Cats",
-        email: "Cats",
+        email: "Cats@Cats.Cats",
         password: "$2a$10$pqsXXKoQmBuaKQ.Tg0RJ/eafwvr3pF49IMi6ovoq8fRwwVBPE6r0K"
     },
     "Dogs": {
         id: "Dogs",
-        email: "Dogs",
+        email: "Dogs@Dogs.Dogs",
         password: "$2a$10$phBSKcWhdBUYjnwh4vmIyO72DTBT0fAVgWLe8qRyF1vug2eu6mnXK"
     }
 };
@@ -70,11 +70,11 @@ const users = {
 //routes
 
 //redirect localhost to create new URL
+//if not logged in, redirect to login page
+//otherwise show user's urls
 app.get("/", (req, res) => {
     let user_id = req.session.user_id;
 
-    //if not logged in, redirect to login page
-    //otherwise show user's urls
     if (user_id === undefined) {
         res.redirect("/login");
     } else {
@@ -83,11 +83,10 @@ app.get("/", (req, res) => {
 });
 
 //lists all URLs in a prettier format
-//passes in username session
+//if user is not logged in, send error message saying they should login first
 app.get("/urls", (req, res) => {
     let user_id = req.session.user_id;
-
-    //if user is not logged in, send error message saying they should login first
+    
     if (user_id === undefined) {
         res.status(400).send("Login to display your URLs");
         return;
@@ -106,11 +105,10 @@ app.get("/urls", (req, res) => {
 });
 
 //shows create new url page
-//passes in username session
+//only allows a logged in user to register new urls, otherwise redirects to login page
 app.get("/urls/new", (req, res) => {
     let user_id = req.session.user_id;
 
-    //only allows a logged in user to register new urls, otherwise redirects to login page
     if (isLoggedIn(user_id)) {
         let templateVars = {
             users: users,
@@ -124,11 +122,9 @@ app.get("/urls/new", (req, res) => {
 });
 
 //shows more detailed info on a particular shortened URL
-//passes in username session
 app.get("/urls/:id", (req, res) => {
     let user_id = req.session.user_id;
 
-    //only allows a logged in user to see urls
     if (isLoggedIn(user_id)) {
         //finds shortURL from database, renders page
         if (urlDatabase[req.params.id] != undefined) {
@@ -168,18 +164,18 @@ app.get("/u/:shortURL", (req, res) => {
     console.log(req.session.visitor_id + "--------------------");
 
     //generates a unique vistor ID
-    if (visitorID === "" || visitorID === undefined){
+    if (visitorID === "" || visitorID === undefined) {
         visitorID = generateRandomString();
         req.session.visitor_id = visitorID;
     }
     //if uniqueVisits doesnt have visitorID as key, create new array
-    if (urlDatabase[shortURL].uniqueVisits[visitorID] === undefined){
+    if (urlDatabase[shortURL].uniqueVisits[visitorID] === undefined) {
         urlDatabase[shortURL].uniqueVisits[visitorID] = [];
-        
+
     }
     //otherwise push it onto visitor array directly
     urlDatabase[shortURL].uniqueVisits[visitorID].push(new Date());
-    
+
     //increment numVisited counter
     urlDatabase[shortURL].numVisited += 1;
     res.redirect(longURL);
