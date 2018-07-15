@@ -178,7 +178,7 @@ app.get("/u/:shortURL", (req, res) => {
     console.log(req.session.visitor_id + "--------------------");
 
     //generates a unique vistor ID
-    if (visitorID == "" || visitorID === undefined){
+    if (visitorID === "" || visitorID === undefined){
         visitorID = generateRandomString();
         req.session.visitor_id = visitorID;
     }
@@ -301,13 +301,13 @@ app.post("/login", (req, res) => {
 
     //checks if email exists 
     for (let key in users) {
-        if (users[key].email == inputEmail) {
+        if (users[key].email === inputEmail) {
             userExists = true;
             userId = users[key].id;
         }
     }
     //if user does not exist in database, return 401 authentication error
-    if (userExists == false) {
+    if (userExists === false) {
         res.status(401).send("Email does not exist or Password does not match!");
         return;
     }
@@ -319,7 +319,7 @@ app.post("/login", (req, res) => {
         }
     }
     //if user does not exist in database, return 401 authentication error
-    if (passwordMatch == false) {
+    if (passwordMatch === false) {
         res.status(401).send("Email does not exist or Password does not match!");
         return;
     }
@@ -346,7 +346,7 @@ app.post("/register", (req, res) => {
     }
     //checks if email exists already
     for (let key in users) {
-        if (inputEmail == users[key].email) {
+        if (inputEmail === users[key].email) {
             res.status(401).send("Email already exists!");
             return;
         }
@@ -393,7 +393,7 @@ function isLoggedIn(user_id) {
     }
     //loop through users and see if user_id is in database
     for (let key in users) {
-        if (users[key].id == user_id) {
+        if (users[key].id === user_id) {
             return true;
         }
     }
@@ -405,14 +405,13 @@ function urlsForUser(id) {
     let urlsList = {};
 
     for (let key in urlDatabase) {
-        if (urlDatabase[key].userID == id) {
+        if (urlDatabase[key].userID === id) {
             urlsList[key] = urlDatabase[key];
         }
     }
 
     return urlsList;
 }
-
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}!`);
