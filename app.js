@@ -5,6 +5,23 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const methodOverride = require('method-override');
 
+const app = express();
+
+//view engine
+app.set('view engine', 'ejs');
+
+//middleware
+app.use(cookieSession({
+    name: 'session',
+    keys: ["Cats Rule The World"],
+
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+app.use(morgan('dev'));
+
+//variable declarations:
 const PORT = 8080;
 
 const urlDatabase = {
@@ -49,33 +66,6 @@ const users = {
         password: "$2a$10$phBSKcWhdBUYjnwh4vmIyO72DTBT0fAVgWLe8qRyF1vug2eu6mnXK"
     }
 };
-
-const app = express();
-
-//view engine
-app.set('view engine', 'ejs');
-
-//middleware
-app.use(cookieSession({
-    name: 'session',
-    keys: ["Cats Rule The World"],
-
-    // Cookie Options
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
-app.use(morgan('dev'));
-app.use(function (req, res, next) {
-    console.log(req.method + ": " +req.path);
-    console.log(req.cookies);
-    console.log('- - - - - - - - - - - - - -');
-    console.log(users);
-    console.log('- - - - - - - - - - - - - -');
-    console.log(urlDatabase);
-    console.log('###########################');
-    next();
-  });
 
 //routes
 
