@@ -371,10 +371,6 @@ app.post("/logout", (req, res) => {
     res.redirect('/login');
 });
 
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}!`);
-});
-
 //function to genereate a unique shortURL for any new longURLs
 function generateRandomString() {
     let stringLength = 6;
@@ -416,3 +412,8 @@ function urlsForUser(id) {
 
     return urlsList;
 }
+
+
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}!`);
+});
